@@ -183,6 +183,32 @@ func (r *Repo) FetchWarehousesWithItemUnreserved(ctx context.Context, itemCode s
 	return res, nil
 }
 
+const FetchItemsByCodesSql = `SELECT item.name, size, code, amount, reserved, w.is_available, w.uuid AS warehouse_id FROM item 
+		                                    INNER JOIN item_warehouse iw ON item.code = iw.item_code
+		                                    INNER JOIN warehouse w ON w.uuid = iw.warehouse_id
+		                                    WHERE item_code = ANY($1)`
+
+func (r *Repo) FetchItemsByCodes(ctx context.Context, codes []string) (entity.FetchItemsByCodesResponse, error) {
+	res := entity.FetchItemsByCodesResponse{}
+
+	var q querier = r.db
+	if tx := extractTx(ctx); tx != nil {
+		q = tx
+	}
+
+	err := q.SelectContext(ctx,
+		&res.Items,
+		FetchItemsByCodesSql,
+		pq.Array(codes),
+	)
+
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (r *Repo) BeginTx(ctx context.Context) (*sqlx.Tx, error) {
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -220,30 +246,4 @@ func extractTx(ctx context.Context) *sqlx.Tx {
 		return tx
 	}
 	return nil
-}
-
-const FetchItemsByCodesSql = `SELECT item.name, size, code, amount, reserved, w.is_available, w.uuid AS warehouse_id FROM item 
-		                                    INNER JOIN item_warehouse iw ON item.code = iw.item_code
-		                                    INNER JOIN warehouse w ON w.uuid = iw.warehouse_id
-		                                    WHERE item_code = ANY($1) FOR UPDATE `
-
-func (r *Repo) FetchItemsByCodes(ctx context.Context, codes []string) (entity.FetchItemsByCodesResponse, error) {
-	res := entity.FetchItemsByCodesResponse{}
-
-	var q querier = r.db
-	if tx := extractTx(ctx); tx != nil {
-		q = tx
-	}
-
-	err := q.SelectContext(ctx,
-		&res.Items,
-		FetchItemsByCodesSql,
-		pq.Array(codes),
-	)
-
-	if err != nil {
-		return res, err
-	}
-
-	return res, nil
 }

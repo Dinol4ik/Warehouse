@@ -43,9 +43,9 @@ func (a *App) Run() error {
 
 	repository := repo.New(db)
 
-	experimentUC := warehouse.NewExperimentUsecase(repository, log)
+	warehouseUC := warehouse.NewWarehouse(repository, log)
 
-	rpcServer := controller.NewServer(*log, experimentUC)
+	rpcServer := controller.NewServer(*log, warehouseUC)
 	log.Info("application has started")
 	go rpcServer.Run()
 

@@ -13,7 +13,7 @@ type UseCase struct {
 	logger *zap.SugaredLogger
 }
 
-func NewExperimentUsecase(r storage.Repo, logger *zap.SugaredLogger) *UseCase {
+func NewWarehouse(r storage.Repo, logger *zap.SugaredLogger) *UseCase {
 	return &UseCase{
 		repo:   r,
 		logger: logger,

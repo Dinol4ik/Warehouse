@@ -15,7 +15,7 @@ func (s *Server) ReserveItemHandler(request *entity.RPCRequest, response *entity
 	}
 
 	ctx := context.Background()
-	res, err := s.experimentUC.ReserveItem(ctx, params)
+	res, err := s.warehouseUC.ReserveItem(ctx, params)
 	marshal, err := json.Marshal(res)
 	if err != nil {
 		return err
@@ -34,7 +34,7 @@ func (s *Server) FetchWarehouseItemsHandler(request *entity.RPCRequest, response
 	}
 
 	ctx := context.Background()
-	res, err := s.experimentUC.FetchItemsWarehouse(ctx, params)
+	res, err := s.warehouseUC.FetchItemsWarehouse(ctx, params)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (s *Server) UnReserveItemHandler(request *entity.RPCRequest, response *enti
 	}
 
 	ctx := context.Background()
-	res, err := s.experimentUC.UnReserveItem(ctx, params)
+	res, err := s.warehouseUC.UnReserveItem(ctx, params)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (s *Server) FetchItemsByCodesHandler(request *entity.RPCRequest, response *
 	}
 
 	ctx := context.Background()
-	res, err := s.experimentUC.FetchItemsByCodes(ctx, params)
+	res, err := s.warehouseUC.FetchItemsByCodes(ctx, params)
 	if err != nil {
 		return err
 	}

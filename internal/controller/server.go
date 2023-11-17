@@ -9,14 +9,14 @@ import (
 )
 
 type Server struct {
-	logger       *zap.SugaredLogger
-	experimentUC usecase.Experiment
+	logger      *zap.SugaredLogger
+	warehouseUC usecase.Warehouse
 }
 
-func NewServer(logger zap.SugaredLogger, wUC usecase.Experiment) *Server {
+func NewServer(logger zap.SugaredLogger, wUC usecase.Warehouse) *Server {
 	return &Server{
-		logger:       &logger,
-		experimentUC: wUC,
+		logger:      &logger,
+		warehouseUC: wUC,
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"warehouse/internal/entity"
 )
 
-type Experiment interface {
+type Warehouse interface {
 	ReserveItem(context.Context, entity.ReserveItemRequest) (entity.ReserveItemResponse, error)
 	FetchItemsWarehouse(context.Context, entity.FetchWarehouseItemsRequest) (entity.FetchWarehouseItemsResponse, error)
 	UnReserveItem(context.Context, entity.UnReserveItemRequest) (entity.UnReserveItemResponse, error)

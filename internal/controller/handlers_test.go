@@ -39,7 +39,7 @@ func TestWarehouseService_FetchWarehouseItemsHandler(t *testing.T) {
 	}{
 		{
 			name:             "OK",
-			request:          &entity.RPCRequest{Data: `{"id":"uuidgeneration"}`},
+			request:          &entity.RPCRequest{Data: `{"id":"88802b69-2f8a-4f15-9f27-70b0c7446121"}`},
 			expectedResponse: &entity.RPCResult{Data: `{"items":[{"name":"name","size":"size","code":"code","amount":14,"reserved":10},{"name":"name2","size":"size2","code":"code2","amount":24,"reserved":14}]}`},
 			willReturnRows: entity.FetchWarehouseItemsResponse{Items: []entity.ItemInfo{
 				{
@@ -61,7 +61,7 @@ func TestWarehouseService_FetchWarehouseItemsHandler(t *testing.T) {
 
 		{
 			name:             "Non existing warehouse id",
-			request:          &entity.RPCRequest{Data: `{"id":"asdasdasdasdas"}`},
+			request:          &entity.RPCRequest{Data: `{"id":"88802b69-none-4f15-none-70b0c7446121"}`},
 			expectedResponse: &entity.RPCResult{Data: `{"items":null}`},
 			willReturnRows:   entity.FetchWarehouseItemsResponse{Items: []entity.ItemInfo{}},
 		},
@@ -72,8 +72,8 @@ func TestWarehouseService_FetchWarehouseItemsHandler(t *testing.T) {
 			con, mock := repo.NewDBMock(t)
 			repository := repo.New(con)
 			ws := &Server{
-				logger:       log,
-				experimentUC: warehouse.NewExperimentUsecase(repository, log),
+				logger:      log,
+				warehouseUC: warehouse.NewWarehouse(repository, log),
 			}
 
 			response := &entity.RPCResult{}
@@ -100,8 +100,8 @@ func TestWarehouseService_ReserveItemHandler(t *testing.T) {
 	}{
 		{
 			name:             "OK",
-			request:          &entity.RPCRequest{Data: `{"items":[{"code":"AN0145YT5ZKKINS","amount":8}]}`},
-			expectedResponse: &entity.RPCResult{Data: `{"successes":null,"errors":["AN0145YT5ZKKINS"]}`},
+			request:          &entity.RPCRequest{Data: `{"items":[{"code":"MP002XW0YOGZ","amount":8}]}`},
+			expectedResponse: &entity.RPCResult{Data: `{"successes":null,"errors":["MP002XW0YOGZ"]}`},
 			warehouses: entity.WarehousesWithItemUnreserved{Warehouses: []entity.WarehouseWithItem{
 				{
 					ID:         "719942d3-7831-420b-951f-5a6aa784ce11",
@@ -116,8 +116,8 @@ func TestWarehouseService_ReserveItemHandler(t *testing.T) {
 
 		{
 			name:             "Non existing item code",
-			request:          &entity.RPCRequest{Data: `{"items":[{"code":"AN0145YT5ZKKIS","amount":8}]}`},
-			expectedResponse: &entity.RPCResult{Data: `{"successes":null,"errors":["AN0145YT5ZKKIS"]}`},
+			request:          &entity.RPCRequest{Data: `{"items":[{"code":"MP002XW0YOG","amount":8}]}`},
+			expectedResponse: &entity.RPCResult{Data: `{"successes":null,"errors":["MP002XW0YOG"]}`},
 			warehouses: entity.WarehousesWithItemUnreserved{Warehouses: []entity.WarehouseWithItem{
 				{
 					ID:         "719942d3-7831-420b-951f-5a6aa784ce11",
@@ -136,8 +136,8 @@ func TestWarehouseService_ReserveItemHandler(t *testing.T) {
 			con, mock := repo.NewDBMock(t)
 			repository := repo.New(con)
 			ws := &Server{
-				logger:       log,
-				experimentUC: warehouse.NewExperimentUsecase(repository, log),
+				logger:      log,
+				warehouseUC: warehouse.NewWarehouse(repository, log),
 			}
 
 			response := &entity.RPCResult{}
@@ -152,8 +152,8 @@ func TestWarehouseService_ReserveItemHandler(t *testing.T) {
 			mock.ExpectBegin()
 			mock.ExpectQuery(regexp.QuoteMeta(repo.FetchItemsByCodesSql)).WithArgs(sqlmock.AnyArg()).WillReturnRows(willReturnRowsUnreserved)
 			mock.ExpectQuery(regexp.QuoteMeta(repo.FetchWarehousesWithItemUnreservedSql)).WithArgs(sqlmock.AnyArg()).WillReturnRows(willReturnRowsWarehouses)
-			mock.ExpectExec(regexp.QuoteMeta(repo.ReserveItemInWarehouseSql)).WithArgs(driver.Value(7), driver.Value("AN0145YT5ZKKINS"), driver.Value("719942d3-7831-420b-951f-5a6aa784ce11")).WillReturnResult(sqlmock.NewResult(1, 1))
-			mock.ExpectExec(regexp.QuoteMeta(repo.ReserveItemInWarehouseSql)).WithArgs(driver.Value(1), driver.Value("AN0145YT5ZKKINS"), driver.Value("0bf05571-a646-45a3-b43f-f4832495807f")).WillReturnResult(sqlmock.NewResult(1, 1))
+			mock.ExpectExec(regexp.QuoteMeta(repo.ReserveItemInWarehouseSql)).WithArgs(driver.Value(7), driver.Value("MP002XW0YOGZ"), driver.Value("719942d3-7831-420b-951f-5a6aa784ce11")).WillReturnResult(sqlmock.NewResult(1, 1))
+			mock.ExpectExec(regexp.QuoteMeta(repo.ReserveItemInWarehouseSql)).WithArgs(driver.Value(1), driver.Value("MP002XW0YOGZ"), driver.Value("0bf05571-a646-45a3-b43f-f4832495807f")).WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectCommit()
 			if err := ws.ReserveItemHandler(tt.request, response); err != nil {
 				t.Errorf("ReserveItemHandler() error = %v", err)
@@ -164,7 +164,7 @@ func TestWarehouseService_ReserveItemHandler(t *testing.T) {
 	}
 }
 
-func TestWarehouseService_UnreserveItemHandler(t *testing.T) {
+func TestWarehouseService_UnReserveItemHandler(t *testing.T) {
 	tests := []struct {
 		name             string
 		request          *entity.RPCRequest
@@ -209,8 +209,8 @@ func TestWarehouseService_UnreserveItemHandler(t *testing.T) {
 			con, mock := repo.NewDBMock(t)
 			repository := repo.New(con)
 			ws := &Server{
-				logger:       log,
-				experimentUC: warehouse.NewExperimentUsecase(repository, log),
+				logger:      log,
+				warehouseUC: warehouse.NewWarehouse(repository, log),
 			}
 
 			response := &entity.RPCResult{}
