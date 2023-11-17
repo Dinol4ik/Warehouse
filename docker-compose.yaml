@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:14.3-alpine
+    environment:
+      POSTGRES_DB: "lamoda"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+
+  migration:
+    depends_on:
+      - postgres
+    build: ./migrations
+    container_name: migrations
+    restart: on-failure
+
+  server:
+    depends_on:
+      - postgres
+    restart: on-failure
+    build: .
+    container_name: lamoda
+
+    ports:
+      - "8080:8080"
