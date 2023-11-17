@@ -2,18 +2,18 @@
 
 Данный проект представляет собой JSON RPC API, реализующее возможность взаимодействия со складами товаров.
 #### !!! Для запуска проекта в корневой папке должен лежать файл config.yaml!!!
-    Пример:
+Пример:
     logger:
-    level: -1
+        level: -1
     
     httpServer:
-    Address: '0.0.0.0:8080'
+        Address: '0.0.0.0:8080'
     
     postgres:
-    host: 'postgres'
-    user: 'user'
-    dbname: 'lamoda'
-    password: 'postgres'
+        host: 'postgres'
+        user: 'user'
+        dbname: 'lamoda'
+        password: 'postgres'
 ## Установка
 
     go mod download
@@ -33,10 +33,11 @@
            goose down (откат последней миграции)
            gooose create <название_миграции> sql (создание новой миграции)
            goose status (просмотр примененных миграциий)
+    Ленивый запуск - goose postgres "user=postgres dbname=postgres password=postgres sslmode=disable" up or down or create ..
 
 ## Запуск тестов
 
-     go test .\internal\controller\rpc\. -v
+     go test .\internal\controller\. -v
 
 ## Запуск в Docker
 
