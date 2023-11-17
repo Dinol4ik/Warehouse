@@ -68,7 +68,7 @@ func main() {
 func ReserveItemHandlerTest(client *rpc.Client) {
 	marshal, err := json.Marshal(ReserveItemRequest{
 		Items: []Item{
-			{"MP002XW08D8E", 10},
+			{"MP002XW0YADJ", 10},
 		},
 		Method: "ReserveItemHandler",
 	})
@@ -107,7 +107,7 @@ func FetchWarehouseItemsHandlerTest(client *rpc.Client) {
 func UnReserveItemHandlerTest(client *rpc.Client) {
 	marshal, err := json.Marshal(UnreservedItemRequest{
 		Items: []Item{
-			{"MP002XM0848D", 8},
+			{"MP002XW0L57W", 8},
 		},
 		Method: "UnReserveItemHandler",
 	})
@@ -124,7 +124,7 @@ func UnReserveItemHandlerTest(client *rpc.Client) {
 }
 func FetchItemsByCodesHandlerTest(client *rpc.Client) {
 	marshal, err := json.Marshal(FetchItemsByCodesRequest{
-		Codes: []string{"MP002XM0AYK1"},
+		Codes: []string{"RTLACI608901"},
 	})
 	args1 := &Req{string(marshal)}
 	var reply *Result

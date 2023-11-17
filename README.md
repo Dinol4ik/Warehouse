@@ -2,7 +2,8 @@
 
 Данный проект представляет собой JSON RPC API, реализующее возможность взаимодействия со складами товаров.
 #### !!! Для запуска проекта в корневой папке должен лежать файл config.yml!!!
-    Пример:
+Пример:
+
     logger:
     level: -1
     
@@ -34,15 +35,19 @@
            gooose create <название_миграции> sql (создание новой миграции)
            goose status (просмотр примененных миграциий)
 
+    *Ленивый запуск - goose postgres "user=user dbname=lamoda password=postgres sslmode=disable" up or down or create ..
+    ** Для тестирования сервиса нужно выполнить миграции с автозаполнением таблиц команда выше
+
 ## Запуск тестов
 
-     go test .\internal\controller\rpc\. -v
+    go test .\internal\controller\. -v
 
-## Запуск в Docker
+## Запуск в Docker через Make
 
-     docker-compose up
+     Make up
 
-## Запуск клиента
+
+## Запуск клиента для тестирования сервиса
 
     go run .\cmd\client\client.go
 
