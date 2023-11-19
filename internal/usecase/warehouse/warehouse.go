@@ -54,6 +54,7 @@ func (u *UseCase) ReserveItem(ctx context.Context, params entity.ReserveItemRequ
 				}
 				if needReserve == 0 {
 					res.Success = append(res.Success, item.Code)
+					return res, nil
 				}
 			}
 		}

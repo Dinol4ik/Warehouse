@@ -86,7 +86,7 @@ func ReserveItemHandlerTest(client *rpc.Client) {
 func FetchWarehouseItemsHandlerTest(client *rpc.Client) {
 	marshal, err := json.Marshal(FetchWarehouseItemsRequest{
 		Method: "FetchWarehouseItemsHandler",
-		ID:     "938899c4-6376-4622-977d-ed51d851acdb",
+		ID:     "c8575d67-7cfb-48ff-b8ed-6f455a18cf05",
 	})
 	args1 := &Req{string(marshal)}
 	var reply *Result

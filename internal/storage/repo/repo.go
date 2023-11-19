@@ -27,10 +27,9 @@ func (r *Repo) GetRepo() *Repo {
 	return r
 }
 
-const GetItemUnreservedByCodeSql = `SELECT SUM(amount) - SUM(reserved) AS unreserved FROM item
-										INNER JOIN item_warehouse iw ON item.code = iw.item_code
-										INNER JOIN warehouse w ON w.uuid = iw.warehouse_id
-										WHERE code=$1 AND w.is_available GROUP BY iw.item_code`
+const GetItemUnreservedByCodeSql = `SELECT SUM(amount) - SUM(reserved) AS unreserved
+									FROM item_warehouse
+									WHERE item_code =$1`
 
 func (r *Repo) GetItemUnreservedByCode(ctx context.Context, code string) (int, error) {
 	var unreserved int
@@ -183,10 +182,11 @@ func (r *Repo) FetchWarehousesWithItemUnreserved(ctx context.Context, itemCode s
 	return res, nil
 }
 
-const FetchItemsByCodesSql = `SELECT item.name, size, code, amount, reserved, w.is_available, w.uuid AS warehouse_id FROM item 
-		                                    INNER JOIN item_warehouse iw ON item.code = iw.item_code
-		                                    INNER JOIN warehouse w ON w.uuid = iw.warehouse_id
-		                                    WHERE item_code = ANY($1)`
+const FetchItemsByCodesSql = `SELECT iw.name, size, code, amount, reserved, w.is_available, w.uuid AS warehouse_id
+								FROM item_warehouse
+								INNER JOIN item iw ON item_code = iw.code
+								INNER JOIN warehouse w ON warehouse_id = w.uuid
+								WHERE item_code = ANY($1)`
 
 func (r *Repo) FetchItemsByCodes(ctx context.Context, codes []string) (entity.FetchItemsByCodesResponse, error) {
 	res := entity.FetchItemsByCodesResponse{}
