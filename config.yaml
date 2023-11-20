@@ -1,0 +1,11 @@
+logger:
+  level: -1
+
+httpServer:
+  Address: '0.0.0.0:8080'
+
+postgres:
+  host: 'localhost'
+  user: 'user'
+  dbname: 'lamoda'
+  password: 'postgres'
